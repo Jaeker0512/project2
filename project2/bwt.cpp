@@ -7,9 +7,10 @@
 #include <unordered_map>
 
 using namespace std;
-string L_line;
+string L_line,F_line, uniq_line,temp;
 unordered_map <char, int> C;
-string uniq_line;
+int flag = 1;
+int correct_search = 0;
 
 int Occ(char c, int order, string str = L_line) {
 	vector <vector<int>> array_cnt(str.length());
@@ -21,6 +22,15 @@ int Occ(char c, int order, string str = L_line) {
 		}
 	}
 	return array_cnt[order][int(c)];
+}
+
+void Count() {
+	for (unsigned int m = 0; m < F_line.length(); m++) {
+		if (!C[F_line[m]]) {
+			C[F_line[m]] = m;
+			uniq_line += F_line[m];
+		}
+	}
 }
 
 void Backward_search(string input, int *First, int *Last) {
@@ -38,21 +48,49 @@ void Backward_search(string input, int *First, int *Last) {
 	}
 }
 
+void Backward_decode(int index) {
+	char b ;
+	while (flag) {
+		b = L_line[index];
+		stringstream ss;
+		ss << b;
+		string b_tmp = ss.str();
+		temp.insert(0,b_tmp);
+		if (b == '[') { 
+			flag = 0;
+		}
+		if (b == ']') {
+			correct_search = 1;
+		}
+		index = C[b] + Occ(b, index) - 1;
+	}
+	flag = 1;
+	if (correct_search) {
+		cout << temp << endl;
+	}
+	temp.clear();
+	string(temp).swap(temp);
+}
+
+void Forward_decode(int index) {
+}
+
 int main(int argc, char* argv[]) {
-	L_line = "[[[[[1[[11endgnad1234245ndbnbbb]]]]]]]nnnngnabbbdiaaaiaaii";
-	string P = "14";
+	L_line = "[[an12nbnb]]aaa";
+	string P = "1";
 	int First, Last;
-	string F_line = L_line;
+	F_line = L_line;
 	sort(F_line.begin(), F_line.end());
-	for (unsigned int m = 0; m < F_line.length(); m++) {
-		if (!C[F_line[m]]) {
-			C[F_line[m]] = m;
-			uniq_line += F_line[m];
+	
+	Count();
+	Backward_search(P, &First, &Last);
+
+	if ((First - Last) <= 0) {
+		for (int r = First; r <= Last; r++) {
+			Backward_decode(r);
 		}
 	}
-	Backward_search(P, &First, &Last);
-	cout << "First: " << First << endl;
-	cout << "Last: " << Last << endl;
+
 	cout <<"F_line: " << F_line << endl;
 	cout << "L_line: " << L_line << endl;
 	cout << uniq_line << endl;
