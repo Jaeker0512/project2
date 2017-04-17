@@ -9,11 +9,12 @@
 using namespace std;
 string L_line,F_line, uniq_line,temp;
 unordered_map <char, int> C; // need to clear.
+vector <vector<int>> occ_table;
 int flag = 1;
 int correct_search = 0;
 int First, Last;
 
-int Occ(char c, int order, string str = L_line) {
+void Occ_build(string str) {
 	vector <vector<int>> array_cnt(str.length());
 	for (unsigned int i = 0; i < str.length(); i++) { array_cnt[i].resize(128); }
 	for (unsigned int j = 0; j < str.length(); j++) {
@@ -22,7 +23,11 @@ int Occ(char c, int order, string str = L_line) {
 			else { array_cnt[j][int(str[k])] = 1; }
 		}
 	}
-	return array_cnt[order][int(c)];
+	occ_table = array_cnt;
+}
+
+int Occ(char c, int order) {
+	return occ_table[order][int(c)];
 }
 
 void Count() {
@@ -83,6 +88,10 @@ void output() {
 			string(temp).swap(temp);
 		}
 	}
+	occ_table.clear();
+	vector <vector<int>>(occ_table).swap(occ_table);
+	C.clear();
+	unordered_map <char, int>(C).swap(C);
 }
 
 int main(int argc, char* argv[]) {
@@ -90,8 +99,9 @@ int main(int argc, char* argv[]) {
 	string P = "an";
 	F_line = L_line;
 	sort(F_line.begin(), F_line.end());
-	
+
 	Count();
+	Occ_build(L_line);
 	Backward_search(P, &First, &Last);
 	output();
 
