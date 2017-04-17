@@ -77,21 +77,18 @@ void Forward_decode(int index) {
 }
 
 void output() {
-	if (correct_keyword) {
-		if ((First - Last) <= 0) {
-			for (int r = First; r <= Last; r++) {
-				Backward_decode(r);
-				if (correct_search) {
-					cout << temp << endl;
-				}
-				correct_search = 0;
-				flag = 1;
-				temp.clear();
-				string(temp).swap(temp);
+	if ((First - Last) <= 0) {
+		for (int r = First; r <= Last; r++) {
+			Backward_decode(r);
+			if (correct_search) {
+				cout << temp << endl;
 			}
+			correct_search = 0;
+			flag = 1;
+			temp.clear();
+			string(temp).swap(temp);
 		}
 	}
-	correct_keyword = 1;
 	occ_table.clear();
 	vector <vector<int>>(occ_table).swap(occ_table);
 	C.clear();
@@ -104,11 +101,16 @@ int main(int argc, char* argv[]) {
 	F_line = L_line;
 	sort(F_line.begin(), F_line.end());
 
-	Count();
-	Occ_build(L_line);
-	Backward_search(P, &First, &Last);
-	output();
+	if (P.find('[') != string::npos || P.find(']') != string::npos) {
+		correct_keyword = 0;
+	}
 
+	if (correct_keyword) {
+		Count();
+		Occ_build(L_line);
+		Backward_search(P, &First, &Last);
+		output();
+	}
 
 	cout <<"F_line: " << F_line << endl;
 	cout << "L_line: " << L_line << endl;
