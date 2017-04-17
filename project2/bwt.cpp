@@ -8,9 +8,10 @@
 
 using namespace std;
 string L_line,F_line, uniq_line,temp;
-unordered_map <char, int> C;
+unordered_map <char, int> C; // need to clear.
 int flag = 1;
 int correct_search = 0;
+int First, Last;
 
 int Occ(char c, int order, string str = L_line) {
 	vector <vector<int>> array_cnt(str.length());
@@ -64,32 +65,36 @@ void Backward_decode(int index) {
 		}
 		index = C[b] + Occ(b, index) - 1;
 	}
-	flag = 1;
-	if (correct_search) {
-		cout << temp << endl;
-	}
-	temp.clear();
-	string(temp).swap(temp);
 }
 
 void Forward_decode(int index) {
 }
 
+void output() {
+	if ((First - Last) <= 0) {
+		for (int r = First; r <= Last; r++) {
+			Backward_decode(r);
+			if (correct_search) {
+				cout << temp << endl;
+			}
+			correct_search = 0;
+			flag = 1;
+			temp.clear();
+			string(temp).swap(temp);
+		}
+	}
+}
+
 int main(int argc, char* argv[]) {
 	L_line = "[[an12nbnb]]aaa";
-	string P = "1";
-	int First, Last;
+	string P = "an";
 	F_line = L_line;
 	sort(F_line.begin(), F_line.end());
 	
 	Count();
 	Backward_search(P, &First, &Last);
+	output();
 
-	if ((First - Last) <= 0) {
-		for (int r = First; r <= Last; r++) {
-			Backward_decode(r);
-		}
-	}
 
 	cout <<"F_line: " << F_line << endl;
 	cout << "L_line: " << L_line << endl;
