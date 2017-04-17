@@ -7,11 +7,12 @@
 #include <unordered_map>
 
 using namespace std;
-string L_line,F_line, uniq_line,temp;
-unordered_map <char, int> C; // need to clear.
+string L_line,F_line, uniq_line,temp; // all need to clear
+unordered_map <char, int> C; // need to clear
 vector <vector<int>> occ_table;
 int flag = 1;
 int correct_search = 0;
+int correct_keyword = 1;
 int First, Last;
 
 void Occ_build(string str) {
@@ -76,18 +77,21 @@ void Forward_decode(int index) {
 }
 
 void output() {
-	if ((First - Last) <= 0) {
-		for (int r = First; r <= Last; r++) {
-			Backward_decode(r);
-			if (correct_search) {
-				cout << temp << endl;
+	if (correct_keyword) {
+		if ((First - Last) <= 0) {
+			for (int r = First; r <= Last; r++) {
+				Backward_decode(r);
+				if (correct_search) {
+					cout << temp << endl;
+				}
+				correct_search = 0;
+				flag = 1;
+				temp.clear();
+				string(temp).swap(temp);
 			}
-			correct_search = 0;
-			flag = 1;
-			temp.clear();
-			string(temp).swap(temp);
 		}
 	}
+	correct_keyword = 1;
 	occ_table.clear();
 	vector <vector<int>>(occ_table).swap(occ_table);
 	C.clear();
@@ -95,8 +99,8 @@ void output() {
 }
 
 int main(int argc, char* argv[]) {
-	L_line = "[[an12nbnb]]aaa";
-	string P = "an";
+	L_line = "[[[[[1[[11endgnad1234245ndbnbbb]]]]]]]nnnngnabbbdiaaaiaaii";
+	string P = "[";
 	F_line = L_line;
 	sort(F_line.begin(), F_line.end());
 
